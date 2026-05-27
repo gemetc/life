@@ -1,627 +1,252 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>gem etcetera</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Canvas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #F8F8F2;
+      --text: #1c1c1e;
+      --text-muted: #6b6b6b;
+      --border: #e2e2da;
+      --accent: #DC1F26;
+    }
 
-  :root {
-    --ink: #1a1916;
-    --paper: #ffffff;
-    --muted: #9a978f;
-    --rule: #e5e5e5;
-    --accent: #2a2825;
-  }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  html { scroll-behavior: smooth; }
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Geist', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
 
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: 'Geist', sans-serif;
-    font-size: 18px;
-    line-height: 1.5;
-    min-height: 100vh;
-  }
+    /* ── Layout ── */
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 80px 32px 120px;
+    }
 
-  header {
-    padding: 4rem 3rem 2rem;
-    border-bottom: 1px solid var(--rule);
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
+    /* ── Header ── */
+    header {
+      margin-bottom: 72px;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 32px;
+    }
 
-  .site-title {
-    font-family: 'Geist', sans-serif;
-    font-size: 2.2rem;
-    font-weight: 300;
-    letter-spacing: 0.12em;
-    text-transform: lowercase;
-  }
+    header h1 {
+      font-size: clamp(1rem, 2vw, 1.4rem);
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
 
-  nav {
-    display: flex;
-    gap: 2.5rem;
-    font-size: 0.85rem;
-    font-family: 'Geist', sans-serif;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
+    header p {
+      margin-top: 8px;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      font-family: 'Geist Mono', monospace;
+    }
 
-  nav a {
-    color: inherit;
-    text-decoration: none;
-    transition: color 0.2s;
-  }
+    /* ── Sections ── */
+    section {
+      margin-bottom: 72px;
+    }
 
-  nav a:hover { color: var(--ink); }
+    section h2 {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+      font-family: 'Geist Mono', monospace;
+    }
 
-  .section {
-    padding: 3.5rem 3rem;
-    border-bottom: 1px solid var(--rule);
-  }
+    /* ── Text block ── */
+    .text-block p {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: var(--text);
+      max-width: 680px;
+    }
 
-  .section-header {
-    display: flex;
-    align-items: baseline;
-    gap: 1.5rem;
-    margin-bottom: 2.5rem;
-  }
+    /* ── Image block ── */
+    .image-block img {
+      width: 100%;
+      display: block;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
 
-  .section-title {
-    font-family: 'Geist', sans-serif;
-    font-size: 1rem;
-    font-weight: 400;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
+    .image-block figcaption {
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-family: 'Geist Mono', monospace;
+    }
 
-  .section-rule {
-    flex: 1;
-    height: 1px;
-    background: var(--rule);
-  }
+    /* ── Video block ── */
+    .video-block {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #efefea;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
 
-  .source-link {
-    font-family: 'Geist', sans-serif;
-    font-size: 0.75rem;
-    color: var(--muted);
-    text-decoration: none;
-    letter-spacing: 0.06em;
-    transition: color 0.2s;
-  }
+    .video-block iframe,
+    .video-block video {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
 
-  .source-link:hover { color: var(--ink); }
+    /* ── Link block ── */
+    .link-block a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      color: var(--text);
+      text-decoration: none;
+      border-bottom: 1px solid var(--accent);
+      padding-bottom: 1px;
+      transition: color 0.15s, border-color 0.15s;
+    }
 
-  /* Tumblr grid */
-  .tumblr-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2px;
-  }
+    .link-block a:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
 
-  .tumblr-card {
-    background: #fff;
-    border: 1px solid var(--rule);
-    overflow: hidden;
-    aspect-ratio: 1;
-    position: relative;
-    cursor: pointer;
-    transition: border-color 0.2s;
-  }
+    /* ── Iframe block ── */
+    .iframe-block {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
 
-  .tumblr-card:hover { border-color: var(--ink); }
-  .tumblr-card:hover .card-overlay { opacity: 1; }
+    .iframe-block iframe {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border: none;
+    }
+    /* ── Divider ── */
+    hr.divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 56px 0;
+    }
 
-  .tumblr-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    filter: grayscale(15%);
-    transition: filter 0.3s;
-  }
-
-  .tumblr-card:hover img { filter: grayscale(0%); }
-
-  .card-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(26,25,22,0.82);
-    color: #f5f3ef;
-    padding: 1.5rem;
-    opacity: 0;
-    transition: opacity 0.25s;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-  }
-
-  .card-overlay-title {
-    font-size: 1rem;
-    font-weight: 300;
-    line-height: 1.4;
-    margin-bottom: 0.5rem;
-  }
-
-  .card-overlay-meta {
-    font-family: 'Geist', sans-serif;
-    font-size: 0.7rem;
-    color: rgba(245,243,239,0.55);
-    letter-spacing: 0.06em;
-  }
-
-  /* Text-only tumblr card */
-  .tumblr-card.text-card {
-    aspect-ratio: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    cursor: pointer;
-  }
-
-  .tumblr-card.text-card:hover { background: var(--ink); }
-  .tumblr-card.text-card:hover .text-card-inner { color: var(--paper); }
-
-  .text-card-inner {
-    font-size: 1rem;
-    font-weight: 300;
-    line-height: 1.6;
-    color: var(--ink);
-    transition: color 0.2s;
-    display: -webkit-box;
-    -webkit-line-clamp: 6;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  /* Are.na grid */
-  .arena-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 2px;
-  }
-
-  .arena-card {
-    background: #fff;
-    border: 1px solid var(--rule);
-    overflow: hidden;
-    aspect-ratio: 1;
-    position: relative;
-    cursor: pointer;
-    transition: border-color 0.2s;
-  }
-
-  .arena-card:hover { border-color: var(--ink); }
-
-  .arena-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    filter: grayscale(15%);
-    transition: filter 0.3s;
-  }
-
-  .arena-card:hover img { filter: grayscale(0%); }
-
-  .arena-card.text-block {
-    padding: 1.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-
-  .arena-card.text-block:hover { background: var(--ink); }
-  .arena-card.text-block:hover .arena-text { color: var(--paper); }
-
-  .arena-text {
-    font-size: 0.85rem;
-    line-height: 1.55;
-    color: var(--ink);
-    transition: color 0.2s;
-    display: -webkit-box;
-    -webkit-line-clamp: 8;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .arena-card.link-block {
-    padding: 1.2rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    background: #f0ede7;
-    gap: 0.4rem;
-    cursor: pointer;
-  }
-
-  .arena-card.link-block:hover { background: var(--ink); }
-  .arena-card.link-block:hover .link-title { color: var(--paper); }
-  .arena-card.link-block:hover .link-source { color: rgba(245,243,239,0.5); }
-
-  .link-title {
-    font-size: 0.85rem;
-    line-height: 1.4;
-    color: var(--ink);
-    transition: color 0.2s;
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .link-source {
-    font-family: 'Geist', sans-serif;
-    font-size: 0.65rem;
-    color: var(--muted);
-    transition: color 0.2s;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .arena-card-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 0.8rem 1rem;
-    background: linear-gradient(transparent, rgba(26,25,22,0.75));
-    opacity: 0;
-    transition: opacity 0.25s;
-  }
-
-  .arena-card:hover .arena-card-overlay { opacity: 1; }
-
-  .arena-card-title {
-    font-size: 0.78rem;
-    color: #f5f3ef;
-    font-style: italic;
-  }
-
-  /* Loading / empty states */
-  .loading-state {
-    grid-column: 1 / -1;
-    padding: 3rem;
-    text-align: center;
-    font-family: 'Geist', sans-serif;
-    font-size: 0.8rem;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-
-  .error-state {
-    grid-column: 1 / -1;
-    padding: 2rem 3rem;
-    font-family: 'Geist', sans-serif;
-    font-size: 0.8rem;
-    color: var(--muted);
-    border: 1px dashed var(--rule);
-    text-align: center;
-  }
-
-  footer {
-    padding: 2rem 3rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .footer-note {
-    font-family: 'Geist', sans-serif;
-    font-size: 0.72rem;
-    color: var(--muted);
-    letter-spacing: 0.06em;
-  }
-
-  @media (max-width: 600px) {
-    header { padding: 2rem 1.5rem 1.5rem; }
-    .section { padding: 2.5rem 1.5rem; }
-    .tumblr-grid { grid-template-columns: repeat(2, 1fr); }
-    .arena-grid { grid-template-columns: repeat(2, 1fr); }
-    footer { padding: 1.5rem; }
-  }
-</style>
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding-top: 28px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: 'Geist Mono', monospace;
+    }
+  </style>
 </head>
 <body>
+  <div class="page">
 
-<header>
-  <span class="site-title">gem etcetera</span>
-  <nav>
-    <a href="https://gemetc.tumblr.com" target="_blank" rel="noopener">tumblr</a>
-    <a href="https://www.are.na/gem-etcetera" target="_blank" rel="noopener">are.na</a>
-  </nav>
-</header>
+    <!-- ── Header ────────────────────────────────────── -->
+    <header>
+      <h1>Your title here</h1>
+      <p>subtitle or date · your name</p>
+    </header>
 
-<section class="section" id="tumblr-section">
-  <div class="section-header">
-    <span class="section-title">Posts</span>
-    <div class="section-rule"></div>
-    <a class="source-link" href="https://gemetc.tumblr.com" target="_blank" rel="noopener">gemetc.tumblr.com ↗</a>
+    <!-- ── Text ──────────────────────────────────────── -->
+    <section class="text-block">
+      <h2>Text</h2>
+      <p>
+        Replace this with whatever you want to say. This is a plain paragraph block. 
+        You can duplicate this <code>&lt;section&gt;</code> as many times as you need 
+        and mix it with the blocks below.
+      </p>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── Image ─────────────────────────────────────── -->
+    <section>
+      <h2>Image</h2>
+      <figure class="image-block">
+        <!-- Replace src with your image path or URL -->
+        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=860&q=80" alt="Mountain landscape" />
+        <figcaption>Caption goes here — location, date, or credit</figcaption>
+      </figure>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── Video (YouTube embed) ──────────────────────── -->
+    <section>
+      <h2>Video</h2>
+      <div class="video-block">
+        <!-- Replace VIDEO_ID with your YouTube ID, or swap for a <video> tag -->
+        <iframe
+          src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+          title="Video"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── Iframe ────────────────────────────────────── -->
+    <section>
+      <h2>Embed</h2>
+      <div class="iframe-block">
+        <!-- Replace src with your URL -->
+        <iframe
+          src="https://example.com"
+          title="Embed"
+          frameborder="0"
+          loading="lazy">
+        </iframe>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── Link ──────────────────────────────────────── -->
+    <section>
+      <h2>Link</h2>
+      <div class="link-block">
+        <a href="https://example.com" target="_blank" rel="noopener">
+          example.com →
+        </a>
+      </div>
+    </section>
+
+    <!-- ── Footer ────────────────────────────────────── -->
+    <footer>
+      <p>your name · your-site.github.io</p>
+    </footer>
+
   </div>
-  <div class="tumblr-grid" id="tumblr-grid">
-    <div class="loading-state">fetching posts…</div>
-  </div>
-</section>
-
-<section class="section" id="arena-section">
-  <div class="section-header">
-    <span class="section-title">Blocks</span>
-    <div class="section-rule"></div>
-    <a class="source-link" href="https://www.are.na/gem-etcetera/blocks" target="_blank" rel="noopener">are.na/gem-etcetera ↗</a>
-  </div>
-  <div class="arena-grid" id="arena-grid">
-    <div class="loading-state">fetching blocks…</div>
-  </div>
-</section>
-
-<footer>
-  <span class="footer-note">fashion intellectual, designer, etc.</span>
-  <span class="footer-note" id="last-updated"></span>
-</footer>
-
-<script>
-function stripHtml(html) {
-  const d = document.createElement('div');
-  d.innerHTML = html;
-  return d.textContent || d.innerText || '';
-}
-
-function loadTumblr() {
-  const grid = document.getElementById('tumblr-grid');
-
-  // Tumblr's legacy /api/read/json endpoint uses JSONP — no CORS issues
-  const script = document.createElement('script');
-  const callbackName = 'tumblrCallback_' + Date.now();
-
-  window[callbackName] = function(data) {
-    delete window[callbackName];
-    script.remove();
-
-    if (!data || !data.posts || !data.posts.length) {
-      grid.innerHTML = `<div class="error-state">No posts found.<br>
-        <a href="https://gemetc.tumblr.com" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">Visit gemetc.tumblr.com ↗</a>
-      </div>`;
-      return;
-    }
-
-    const sixMonthsAgo = Date.now() - (6 * 30 * 24 * 60 * 60 * 1000);
-
-    grid.innerHTML = '';
-    const recentPosts = data.posts.filter(post => {
-      const ts = (post['unix-timestamp'] || 0) * 1000;
-      return ts >= sixMonthsAgo;
-    }).slice(0, 18);
-
-    if (!recentPosts.length) {
-      grid.innerHTML = `<div class="error-state">No posts in the last 6 months.<br>
-        <a href="https://gemetc.tumblr.com" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">Visit gemetc.tumblr.com ↗</a>
-      </div>`;
-      return;
-    }
-
-    recentPosts.forEach(post => {
-      const link = post['url-with-slug'] || post.url || '#';
-      const card = document.createElement('div');
-
-      if (post.type === 'photo') {
-        // Pick best photo size around 500px wide
-        const photos = post.photos || [];
-        let imgSrc = post['photo-url-500'] || post['photo-url-400'] || post['photo-url-1280'];
-        if (!imgSrc && photos.length) {
-          imgSrc = photos[0]['photo-url-500'] || photos[0]['photo-url-400'] || photos[0]['photo-url-1280'];
-        }
-        const caption = stripHtml(post['photo-caption'] || '').trim().slice(0, 120);
-        card.className = 'tumblr-card';
-        card.innerHTML = `
-          <img src="${imgSrc}" alt="${caption}" loading="lazy" onerror="this.closest('.tumblr-card').remove()">
-          ${caption ? `<div class="card-overlay"><div class="card-overlay-title">${caption}</div></div>` : ''}`;
-
-      } else if (post.type === 'text') {
-        const title = post['title'] || '';
-        const body = stripHtml(post['body'] || '').trim().slice(0, 300);
-        const display = title || body;
-        if (!display) return;
-        card.className = 'tumblr-card text-card';
-        card.innerHTML = `<div class="text-card-inner">${display}</div>`;
-
-      } else if (post.type === 'quote') {
-        const quote = stripHtml(post['quote-text'] || '').trim();
-        const source = stripHtml(post['quote-source'] || '').trim();
-        if (!quote) return;
-        card.className = 'tumblr-card text-card';
-        card.innerHTML = `<div class="text-card-inner" style="font-style:normal">"${quote}"${source ? `<br><span style="font-size:0.8em;opacity:0.6;font-style:normal">— ${source}</span>` : ''}</div>`;
-
-      } else if (post.type === 'link') {
-        const title = post['link-text'] || post['link-url'] || 'link';
-        const desc = stripHtml(post['link-description'] || '').trim().slice(0, 120);
-        card.className = 'tumblr-card text-card';
-        card.innerHTML = `<div class="text-card-inner">${title}${desc ? `<br><span style="font-size:0.85em;opacity:0.65">${desc}</span>` : ''}</div>`;
-
-      } else if (post.type === 'video') {
-        const thumb = post['thumbnail-url'];
-        const caption = stripHtml(post['video-caption'] || '').trim().slice(0, 120);
-        if (thumb) {
-          card.className = 'tumblr-card';
-          card.innerHTML = `
-            <img src="${thumb}" alt="${caption}" loading="lazy" onerror="this.closest('.tumblr-card').remove()">
-            ${caption ? `<div class="card-overlay"><div class="card-overlay-title">${caption}</div></div>` : ''}`;
-        } else {
-          card.className = 'tumblr-card text-card';
-          card.innerHTML = `<div class="text-card-inner">${caption || 'video'}</div>`;
-        }
-      } else {
-        return; // skip other types
-      }
-
-      card.addEventListener('click', () => window.open(link, '_blank', 'noopener'));
-      grid.appendChild(card);
-    });
-
-    if (!grid.children.length) {
-      grid.innerHTML = `<div class="error-state">No displayable posts found.<br>
-        <a href="https://gemetc.tumblr.com" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">Visit gemetc.tumblr.com ↗</a>
-      </div>`;
-    }
-  };
-
-  // Timeout fallback
-  const timeout = setTimeout(() => {
-    if (window[callbackName]) {
-      delete window[callbackName];
-      script.remove();
-      grid.innerHTML = `<div class="error-state">Tumblr feed timed out.<br>
-        <a href="https://gemetc.tumblr.com" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">Visit gemetc.tumblr.com ↗</a>
-      </div>`;
-    }
-  }, 8000);
-
-  script.onerror = () => {
-    clearTimeout(timeout);
-    delete window[callbackName];
-    grid.innerHTML = `<div class="error-state">Could not reach Tumblr API.<br>
-      <a href="https://gemetc.tumblr.com" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">Visit gemetc.tumblr.com ↗</a>
-    </div>`;
-  };
-
-  script.src = `https://gemetc.tumblr.com/api/read/json?num=50&callback=${callbackName}`;
-  document.head.appendChild(script);
-}
-
-async function loadArena() {
-  const grid = document.getElementById('arena-grid');
-  try {
-    const res = await fetch('https://api.are.na/v3/users/gem-etcetera/contents?per=100&page=1&sort=created_at_desc');
-    if (!res.ok) throw new Error('arena api error ' + res.status);
-    const data = await res.json();
-    const contents = data.data || [];
-
-    if (!Array.isArray(contents) || !contents.length) throw new Error('no blocks');
-
-    const sixMonthsAgo = new Date(Date.now() - (6 * 30 * 24 * 60 * 60 * 1000)).toISOString();
-
-    const recentBlocks = contents.filter(block => {
-      return (block.created_at || '') >= sixMonthsAgo;
-    }).slice(0, 40);
-
-    if (!recentBlocks.length) {
-      grid.innerHTML = `<div class="error-state">No blocks added in the last 6 months.<br>
-        <a href="https://www.are.na/gem-etcetera" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">Visit are.na/gem-etcetera ↗</a>
-      </div>`;
-      return;
-    }
-
-    grid.innerHTML = '';
-    recentBlocks.forEach(block => {
-      const card = document.createElement('div');
-      const selfLink = block._links?.self?.href;
-      const blockId = block.id;
-      const link = block.source?.url || (selfLink ? 'https://www.are.na' + selfLink : `https://www.are.na/block/${blockId}`);
-      const type = block.type || block.base_type || '';
-
-      if (type === 'Image') {
-        // v3 image: block.image has size keys like "square", "display", "original"
-        const imgUrl = block.image?.display?.url || block.image?.large?.url || block.image?.original?.url || block.image?.thumb?.url;
-        if (!imgUrl) return;
-        card.className = 'arena-card';
-        card.innerHTML = `
-          <img src="${imgUrl}" alt="${block.title || ''}" loading="lazy" onerror="this.closest('.arena-card').remove()">
-          ${block.title ? `<div class="arena-card-overlay"><span class="arena-card-title">${block.title}</span></div>` : ''}`;
-
-      } else if (type === 'Text') {
-        // v3 text: block.content.markdown or block.content.html
-        const txt = stripHtml(block.content?.html || block.content?.markdown || block.content || '').trim();
-        if (!txt) return;
-        card.className = 'arena-card text-block';
-        card.innerHTML = `<div class="arena-text">${txt}</div>`;
-
-      } else if (type === 'Link') {
-        card.className = 'arena-card link-block';
-        let domain = '';
-        try { domain = new URL(block.source?.url || '').hostname.replace('www.',''); } catch(e) {}
-        const title = block.title || block.source?.url || 'link';
-        // If link has a preview image, show that instead
-        const imgUrl = block.image?.display?.url || block.image?.large?.url;
-        if (imgUrl) {
-          card.className = 'arena-card';
-          card.innerHTML = `
-            <img src="${imgUrl}" alt="${title}" loading="lazy" onerror="this.style.display='none'">
-            <div class="arena-card-overlay" style="opacity:1;background:rgba(26,25,22,0.55)">
-              <span class="arena-card-title">${title}</span>
-            </div>`;
-        } else {
-          card.innerHTML = `
-            <div class="link-title">${title}</div>
-            <div class="link-source">${domain}</div>`;
-        }
-
-      } else if (type === 'Attachment') {
-        const imgUrl = block.image?.display?.url || block.image?.large?.url;
-        if (imgUrl) {
-          card.className = 'arena-card';
-          card.innerHTML = `<img src="${imgUrl}" alt="${block.title || ''}" loading="lazy" onerror="this.closest('.arena-card').remove()">`;
-        } else {
-          card.className = 'arena-card link-block';
-          card.innerHTML = `<div class="link-title">${block.title || 'file'}</div><div class="link-source">attachment</div>`;
-        }
-
-      } else if (type === 'Embed' || type === 'Media') {
-        const imgUrl = block.image?.display?.url || block.image?.large?.url;
-        if (imgUrl) {
-          card.className = 'arena-card';
-          card.innerHTML = `<img src="${imgUrl}" alt="${block.title || ''}" loading="lazy" onerror="this.closest('.arena-card').remove()">`;
-        } else {
-          card.className = 'arena-card link-block';
-          card.innerHTML = `<div class="link-title">${block.title || type.toLowerCase()}</div>`;
-        }
-
-      } else if (type === 'Channel') {
-        card.className = 'arena-card link-block';
-        card.innerHTML = `
-          <div class="link-title">${block.title || 'channel'}</div>
-          <div class="link-source">channel</div>`;
-
-      } else {
-        // fallback: try to show something
-        const fallback = stripHtml(block.content?.html || block.content?.markdown || block.content || block.title || '').trim();
-        if (!fallback) return;
-        card.className = 'arena-card text-block';
-        card.innerHTML = `<div class="arena-text">${fallback}</div>`;
-      }
-
-      card.addEventListener('click', () => window.open(link, '_blank', 'noopener'));
-      grid.appendChild(card);
-    });
-
-    if (!grid.children.length) throw new Error('empty after render');
-
-  } catch (e) {
-    grid.innerHTML = `<div class="error-state">
-      Unable to load Are.na content.<br>
-      <a href="https://www.are.na/gem-etcetera" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">Visit are.na/gem-etcetera ↗</a>
-    </div>`;
-  }
-}
-
-document.getElementById('last-updated').textContent = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
-
-loadTumblr();
-loadArena();
-</script>
 </body>
 </html>
